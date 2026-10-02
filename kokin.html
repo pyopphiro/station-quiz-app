@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>古今東西モード - 駅名クイズ</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body>
+
+  <div class="common-header" onclick="location.href='index.html'">🚉 駅名クイズ</div>
+  <h1>🎯 古今東西モード</h1>
+
+  <!-- フィルタセクション -->
+  <div id="filterContainer"></div>
+  <button id="startButton" class="primary start-button" style="margin-bottom:20px;">スタート</button>
+
+  <!-- ゲームセクション（スタート後に表示） -->
+  <div id="gameSection" style="display:none;">
+
+    <div class="input-area">
+      <input type="text" id="answerInput" placeholder="駅名を入力" autocomplete="off" />
+
+      <div class="hint-toggle-container">
+        <label class="switch">
+          <input type="checkbox" id="hintToggle">
+          <span class="slider round"></span>
+        </label>
+        <span class="hint-label">残りの駅名を表示（ヒント）</span>
+      </div>
+
+      <div class="actions">
+        <button id="judgeButton" class="primary">判定</button>
+        <button id="giveUpButton" class="secondary">ギブアップ</button>
+      </div>
+    </div>
+
+    <div id="status" class="status"></div>
+    <div id="count"></div>
+
+    <div id="result" class="result" style="display:none;">
+      <h2 id="resultTitle"></h2>
+      <p id="resultSummary"></p>
+      <button id="resumeButton" class="resumeButton" style="display:none;">続きから再開する</button>
+      <a href="index.html" class="result-link">トップへ戻る</a>
+      <button id="retryButton" class="retryButton" onclick="location.reload()">再挑戦</button>
+    </div>
+
+    <section id="answeredSection" class="card-section">
+      <h3>解答済み</h3>
+      <ul id="answeredList" class="answer-card-list"></ul>
+    </section>
+
+    <section id="allAnswersSection" class="card-section" style="display:none;">
+      <h3>全解答</h3>
+      <ul id="allAnswers" class="answer-card-list"></ul>
+    </section>
+
+  </div>
+
+  <script src="js/data.js"></script>
+  <script src="js/kokin.js"></script>
+
+</body>
+
+</html>

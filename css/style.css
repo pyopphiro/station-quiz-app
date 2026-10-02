@@ -1,0 +1,1014 @@
+/* =========================
+   カラートークン
+   ========================= */
+:root {
+  --main: #0d9488;
+  /* ティール */
+  --main-dark: #134e4a;
+  /* 深ティール（ヘッダ等） */
+  --main-mid: #14b8a6;
+  /* 明るめティール（アクセント） */
+  --main-light: #f0fdfa;
+  /* 薄ティール（背景ハイライト） */
+  --ok: #059669;
+  /* エメラルド */
+  --ok-light: #d1fae5;
+  --ng: #e11d48;
+  /* ローズ */
+  --ng-light: #ffe4e6;
+  --text: #0f172a;
+  /* ダーク */
+  --text-muted: #6b7280;
+  --bg: #f4f6f9;
+  /* ウォームグレー */
+  --surface: #ffffff;
+  --border: #e2e8f0;
+  --shadow: 0 1px 4px rgba(13, 148, 136, 0.08);
+  --radius: 10px;
+}
+
+/* =========================
+   ベース
+   ========================= */
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 20px;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+a {
+  color: var(--main);
+  text-decoration: none;
+  font-weight: bold;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+h1 {
+  margin: 10px 0 20px;
+  font-size: 1.6rem;
+  color: var(--text);
+}
+
+/* =========================
+   共通ヘッダ
+   ========================= */
+.common-header {
+  background: linear-gradient(135deg, var(--main-dark) 0%, var(--main-mid) 100%);
+  color: #fff;
+  padding: 14px 20px;
+  text-align: center;
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+  margin-bottom: 20px;
+  border-radius: var(--radius);
+  letter-spacing: 0.05em;
+  box-shadow: 0 2px 8px rgba(19, 78, 74, 0.25);
+  transition: opacity 0.15s;
+}
+
+.common-header:hover {
+  opacity: 0.92;
+}
+
+/* =========================
+   入力エリア
+   ========================= */
+.input-area {
+  margin-bottom: 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  box-shadow: var(--shadow);
+}
+
+input[type="text"],
+input[type="number"],
+input:not([type]) {
+  padding: 12px 14px;
+  font-size: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  background: #fff;
+  color: var(--text);
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+input:not([type]):focus {
+  border-color: var(--main-mid);
+  box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.15);
+}
+
+input:disabled {
+  background: #f1f5f9;
+  color: var(--text-muted);
+  cursor: not-allowed;
+}
+
+input[type="checkbox"],
+input[type="radio"] {
+  width: auto;
+  height: auto;
+  padding: 0;
+  border: revert;
+  border-radius: revert;
+  background: revert;
+  box-shadow: none;
+  transition: none;
+}
+
+/* =========================
+   ヒント切り替えスイッチ
+   ========================= */
+.hint-toggle-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 14px;
+  margin-bottom: 2px;
+  padding: 4px 0;
+  user-select: none;
+}
+
+.hint-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #cbd5e1;
+  transition: .3s;
+  border-radius: 24px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: .3s;
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.switch input:checked + .slider {
+  background-color: var(--main-mid);
+}
+
+.switch input:focus + .slider {
+  box-shadow: 0 0 1px var(--main-mid);
+}
+
+.switch input:checked + .slider:before {
+  transform: translateX(20px);
+}
+
+.switch input:disabled + .slider {
+  background-color: #e2e8f0;
+  cursor: not-allowed;
+}
+
+/* =========================
+   ボタン共通
+   ========================= */
+button {
+  padding: 12px 16px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: opacity 0.15s, transform 0.1s;
+}
+
+button:hover {
+  opacity: 0.88;
+}
+
+button:active {
+  transform: scale(0.97);
+}
+
+button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+}
+
+button.primary {
+  background: linear-gradient(135deg, var(--main) 0%, var(--main-mid) 100%);
+  color: white;
+  box-shadow: 0 2px 6px rgba(13, 148, 136, 0.3);
+}
+
+button.secondary {
+  background: #e0f2f1;
+  color: var(--main-dark);
+}
+
+.actions {
+  margin-top: 12px;
+  display: flex;
+  gap: 10px;
+}
+
+.actions button {
+  flex: 1;
+  font-size: 1.05rem;
+}
+
+/* =========================
+   ステータス表示
+   ========================= */
+.status {
+  margin-top: 12px;
+  font-weight: bold;
+  font-size: 1rem;
+  padding: 8px 12px;
+  border-radius: 6px;
+  min-height: 38px;
+}
+
+.status.ok {
+  color: var(--ok);
+  background: var(--ok-light);
+}
+
+.status.ng {
+  color: var(--ng);
+  background: var(--ng-light);
+}
+
+#count {
+  margin-top: 10px;
+  font-weight: 600;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+/* =========================
+   解答・全解答カードセクション
+   ========================= */
+.card-section {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px 16px;
+  box-shadow: var(--shadow);
+  margin-top: 16px;
+}
+
+.card-section h3 {
+  margin-top: 0;
+  margin-bottom: 12px;
+  font-size: 1.1rem;
+  color: var(--text);
+}
+
+.answer-card-list {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.answer-card-list li {
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+#answeredList li.recent {
+  background: var(--main-light);
+  border-left: 4px solid var(--main-mid);
+  font-weight: bold;
+  color: var(--main);
+}
+
+#answeredList li.duplicate {
+  background: var(--ng-light);
+  border-left: 4px solid var(--ng);
+  font-weight: bold;
+  color: var(--ng);
+}
+
+#answeredList li.hint-placeholder {
+  background-color: #f8fafc;
+  border: 1px dashed #cbd5e1;
+  color: #94a3b8;
+  height: 1.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  transition: all 0.2s ease;
+}
+
+#answeredList li.hint-placeholder::before {
+  content: "?";
+  font-weight: bold;
+  opacity: 0.5;
+}
+
+/* 全解答表示時の要素スタイル */
+.answer-ok {
+  color: var(--ok);
+  background: var(--ok-light);
+  font-weight: 600;
+}
+
+.answer-ng {
+  color: var(--ng);
+  background: var(--ng-light);
+  font-weight: 600;
+}
+
+/* =========================
+   リザルト表示
+   ========================= */
+.result {
+  margin-top: 30px;
+  padding: 24px 20px;
+  border-radius: var(--radius);
+  background: linear-gradient(135deg, var(--main-light) 0%, #ccfbf1 100%);
+  border: 1px solid #99f6e4;
+  text-align: center;
+  box-shadow: var(--shadow);
+}
+
+.result h2 {
+  margin-top: 0;
+  font-size: 1.5rem;
+  color: var(--main-dark);
+}
+
+.result p {
+  color: var(--text-muted);
+  font-size: 1rem;
+  margin-bottom: 4px;
+}
+
+.result-link {
+  display: inline-block;
+  margin-top: 16px;
+  padding: 10px 20px;
+  background: linear-gradient(135deg, var(--main) 0%, var(--main-mid) 100%);
+  color: white !important;
+  border-radius: 8px;
+  font-weight: bold;
+  box-shadow: 0 2px 6px rgba(13, 148, 136, 0.25);
+  transition: opacity 0.15s;
+}
+
+.result-link:hover {
+  opacity: 0.88;
+  text-decoration: none;
+}
+
+.retryButton {
+  display: inline-block;
+  margin-top: 16px;
+  margin-left: 10px;
+  padding: 10px 20px;
+  background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
+  color: white;
+  border-radius: 8px;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(239, 68, 68, 0.25);
+  transition: opacity 0.15s, transform 0.1s;
+}
+
+.retryButton:hover {
+  opacity: 0.88;
+}
+
+/* =========================
+   続きから再開ボタン
+   ========================= */
+.resumeButton {
+  display: inline-block;
+  margin-top: 16px;
+  margin-right: 10px;
+  padding: 10px 20px;
+  background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+  color: white;
+  border-radius: 8px;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(5, 150, 105, 0.25);
+  transition: opacity 0.15s, transform 0.1s;
+}
+
+.resumeButton:hover {
+  opacity: 0.88;
+}
+
+/* =========================
+   モードカード（トップページ）
+   ========================= */
+.mode-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.mode-card {
+  display: block;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px 20px;
+  box-shadow: var(--shadow);
+  text-decoration: none !important;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.mode-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(13, 148, 136, 0.15);
+}
+
+.mode-card h2 {
+  margin: 0 0 8px;
+  font-size: 1.3rem;
+  color: var(--main-dark);
+}
+
+.mode-card p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  font-weight: normal;
+}
+
+/* =========================
+   フィルタパネル
+   ========================= */
+.filter-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  box-shadow: var(--shadow);
+  margin-bottom: 20px;
+}
+
+.filter-title {
+  margin: 0 0 14px;
+  font-size: 1.1rem;
+  color: var(--text);
+}
+
+/* AND/OR トグル */
+.combine-mode {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 14px;
+  padding: 8px 12px;
+  background: var(--main-light);
+  border-radius: 8px;
+}
+
+.combine-option {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text);
+  cursor: pointer;
+}
+
+/* 条件行 */
+.condition-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.condition-row {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.condition-type-select {
+  flex-shrink: 0;
+  padding: 10px 12px;
+  font-size: 0.9rem;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--text);
+  cursor: pointer;
+  outline: none;
+  min-width: 140px;
+}
+
+.condition-type-select:focus {
+  border-color: var(--main-mid);
+}
+
+.condition-value-area {
+  flex: 1;
+  min-width: 0;
+}
+
+.condition-value-area input[type="text"],
+.condition-value-area input[type="number"] {
+  width: 100%;
+}
+
+.condition-remove-btn {
+  flex-shrink: 0;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  font-size: 1.2rem;
+  background: var(--ng-light);
+  color: var(--ng);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.condition-remove-btn:hover {
+  background: var(--ng);
+  color: #fff;
+}
+
+.condition-add-btn {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  font-size: 0.95rem;
+  background: none;
+  color: var(--main);
+  border: 2px dashed var(--main-mid);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s;
+  margin-bottom: 14px;
+}
+
+.condition-add-btn:hover {
+  background: var(--main-light);
+}
+
+.filter-preview {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  padding: 8px 0;
+}
+
+.filter-preview strong {
+  color: var(--main);
+  font-size: 1.1rem;
+}
+
+.start-button {
+  width: 100%;
+  padding: 14px;
+  font-size: 1.1rem;
+  margin-top: 8px;
+}
+
+/* =========================
+   マルチセレクト
+   ========================= */
+.multi-select {
+  position: relative;
+}
+
+.multi-select-trigger {
+  width: 100%;
+  padding: 10px 14px;
+  font-size: 0.9rem;
+  text-align: left;
+  background: #fff;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.multi-select-trigger:hover {
+  border-color: var(--main-mid);
+  opacity: 1;
+}
+
+.multi-select-trigger .ms-arrow {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  transition: transform 0.2s;
+}
+
+.multi-select.open .ms-arrow {
+  transform: rotate(180deg);
+}
+
+.multi-select-panel {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border: 2px solid var(--main-mid);
+  border-radius: 8px;
+  margin-top: 4px;
+  z-index: 100;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+  max-height: 300px;
+  display: flex;
+  flex-direction: column;
+}
+
+.multi-select-search {
+  margin: 8px;
+  padding: 8px 10px !important;
+  font-size: 0.85rem !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 6px !important;
+  width: calc(100% - 16px) !important;
+}
+
+.multi-select-controls {
+  display: flex;
+  gap: 6px;
+  padding: 0 8px 6px;
+}
+
+.multi-select-controls button {
+  padding: 4px 10px;
+  font-size: 0.78rem;
+  background: var(--main-light);
+  color: var(--main);
+  border: 1px solid var(--main-mid);
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.multi-select-controls button:hover {
+  background: var(--main-mid);
+  color: #fff;
+}
+
+.multi-select-options {
+  overflow-y: auto;
+  flex: 1;
+  padding: 0 8px 8px;
+}
+
+.ms-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 6px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.88rem;
+  color: var(--text);
+}
+
+.ms-option:hover {
+  background: var(--main-light);
+}
+
+.ms-option.hidden {
+  display: none;
+}
+
+/* =========================
+   セットアップパネル（クイズ）
+   ========================= */
+.setup-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  box-shadow: var(--shadow);
+  margin-bottom: 20px;
+}
+
+.setup-panel h3 {
+  margin: 0 0 14px;
+  font-size: 1.1rem;
+  color: var(--text);
+}
+
+.setup-group {
+  margin-bottom: 16px;
+}
+
+.setup-group > label {
+  display: block;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.radio-group label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.92rem;
+  color: var(--text);
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 6px;
+  transition: background 0.12s;
+}
+
+.radio-group label:hover {
+  background: var(--main-light);
+}
+
+/* =========================
+   クイズ出題エリア
+   ========================= */
+.quiz-progress {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 16px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--text-muted);
+}
+
+.quiz-question {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px 20px;
+  box-shadow: var(--shadow);
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.quiz-station-name {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: var(--main-dark);
+  margin-bottom: 8px;
+}
+
+.quiz-prompt {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+}
+
+/* 選択肢ボタン */
+.choices-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.choice-btn {
+  padding: 14px 12px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  background: var(--surface);
+  color: var(--text);
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  text-align: center;
+  word-break: break-all;
+}
+
+.choice-btn:hover:not(:disabled) {
+  border-color: var(--main-mid);
+  background: var(--main-light);
+}
+
+.choice-btn.correct {
+  border-color: var(--ok);
+  background: var(--ok-light);
+  color: var(--ok);
+}
+
+.choice-btn.incorrect {
+  border-color: var(--ng);
+  background: var(--ng-light);
+  color: var(--ng);
+}
+
+.choice-btn:disabled {
+  cursor: default;
+  opacity: 0.7;
+}
+
+/* 記入式エリア */
+.text-answer-area {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.text-answer-area input {
+  flex: 1;
+}
+
+.text-answer-area button {
+  flex-shrink: 0;
+}
+
+/* クイズフィードバック */
+.quiz-feedback {
+  text-align: center;
+  padding: 16px;
+  margin-bottom: 16px;
+  border-radius: var(--radius);
+}
+
+.quiz-feedback.ok {
+  background: var(--ok-light);
+}
+
+.quiz-feedback.ng {
+  background: var(--ng-light);
+}
+
+.quiz-feedback-text {
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin-bottom: 12px;
+}
+
+.quiz-feedback.ok .quiz-feedback-text {
+  color: var(--ok);
+}
+
+.quiz-feedback.ng .quiz-feedback-text {
+  color: var(--ng);
+}
+
+.quiz-feedback .correct-answer {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+}
+
+/* クイズ結果レビュー */
+.quiz-review-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.quiz-review-item {
+  padding: 10px 12px;
+  border-radius: 6px;
+  margin-bottom: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.quiz-review-item.review-ok {
+  background: var(--ok-light);
+  border-left: 4px solid var(--ok);
+}
+
+.quiz-review-item.review-ng {
+  background: var(--ng-light);
+  border-left: 4px solid var(--ng);
+}
+
+.review-question {
+  font-weight: bold;
+  font-size: 0.95rem;
+}
+
+.review-detail {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+/* =========================
+   モバイル最適化
+   ========================= */
+@media (max-width: 640px) {
+  html {
+    font-size: 18px;
+  }
+
+  body {
+    font-size: 20px;
+    padding: 12px;
+  }
+
+  h1 {
+    font-size: 1.8rem;
+  }
+
+  input[type="text"],
+  input[type="number"],
+  input:not([type]) {
+    font-size: 1.1rem;
+    padding: 14px;
+  }
+
+  button {
+    font-size: 1.1rem;
+    padding: 14px 18px;
+  }
+
+  .answer-card-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px 12px;
+  }
+
+  .condition-row {
+    flex-wrap: wrap;
+  }
+
+  .condition-type-select {
+    width: 100%;
+    min-width: unset;
+  }
+
+  .condition-value-area {
+    width: 100%;
+  }
+
+  .choices-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .quiz-station-name {
+    font-size: 1.5rem;
+  }
+}
