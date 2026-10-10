@@ -61,7 +61,43 @@ document.getElementById("startButton").addEventListener("click", () => {
   document.getElementById("gameSection").style.display = "block";
   answerInput.focus();
   updateCount();
+
+  // フィルタ確認ボタンをセットアップ
+  setupFilterModal(filterUI);
 });
+
+/* ================================================
+   フィルタ確認モーダル
+   ================================================ */
+function setupFilterModal(ui) {
+  const btn = document.getElementById("filterInfoBtn");
+  const modal = document.getElementById("filterModal");
+  const closeBtn = document.getElementById("filterModalClose");
+  const list = document.getElementById("filterModalList");
+  const countEl = document.getElementById("filterModalCount");
+
+  btn.addEventListener("click", () => {
+    const lines = ui.getSummaryLines();
+    list.innerHTML = lines.map(l => `<li>${l}</li>`).join("");
+    const filtered = ui.getFilteredStations();
+    countEl.textContent = `対象駅数：${filtered.length} 駅`;
+    modal.style.display = "flex";
+  });
+
+  closeBtn.addEventListener("click", () => {
+    modal.style.display = "none";
+  });
+
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) modal.style.display = "none";
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && modal.style.display !== "none") {
+      modal.style.display = "none";
+    }
+  });
+}
 
 /* ================================================
    正規化

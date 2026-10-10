@@ -49,9 +49,12 @@
   <!-- クイズセクション -->
   <div id="quizSection" style="display:none;">
 
-    <div class="quiz-progress">
-      <span id="quizProgress"></span>
-      <span id="quizScore"></span>
+    <div class="quiz-top-bar">
+      <div class="quiz-progress-wrap">
+        <span id="quizProgress"></span>
+        <span id="quizScore"></span>
+      </div>
+      <button id="filterInfoBtn" class="filter-info-btn" title="フィルタ条件を確認">🔍 フィルタ</button>
     </div>
 
     <div class="quiz-question">
@@ -89,6 +92,18 @@
 
   <script src="js/data.js"></script>
   <script src="js/quiz.js"></script>
+
+  <!-- フィルタ確認モーダル -->
+  <div id="filterModal" class="filter-modal-overlay" style="display:none;">
+    <div class="filter-modal-box">
+      <div class="filter-modal-header">
+        <span class="filter-modal-title">🔍 適用中のフィルタ条件</span>
+        <button id="filterModalClose" class="filter-modal-close">✕</button>
+      </div>
+      <ul id="filterModalList" class="filter-modal-list"></ul>
+      <div id="filterModalCount" class="filter-modal-count"></div>
+    </div>
+  </div>
 
 </body>
 

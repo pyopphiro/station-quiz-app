@@ -787,6 +787,167 @@ button.secondary {
 }
 
 /* =========================
+   フィルタ確認ボタン＆モーダル
+   ========================= */
+
+/* クイズモード：プログレス＋フィルタボタン行 */
+.quiz-top-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.quiz-progress-wrap {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--text-muted);
+}
+
+/* 古今東西モード：フィルタボタン行 */
+.kokin-top-bar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 12px;
+}
+
+/* フィルタ確認ボタン共通 */
+.filter-info-btn {
+  flex-shrink: 0;
+  padding: 8px 14px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--main-dark) 0%, var(--main) 100%);
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(13, 148, 136, 0.35);
+  transition: opacity 0.15s, transform 0.1s, box-shadow 0.15s;
+  white-space: nowrap;
+  letter-spacing: 0.03em;
+}
+
+.filter-info-btn:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(13, 148, 136, 0.45);
+}
+
+.filter-info-btn:active {
+  transform: scale(0.96);
+}
+
+/* モーダルオーバーレイ */
+.filter-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(3px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+  box-sizing: border-box;
+  animation: fadeInOverlay 0.18s ease;
+}
+
+@keyframes fadeInOverlay {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* モーダルボックス */
+.filter-modal-box {
+  background: var(--surface);
+  border-radius: 14px;
+  box-shadow: 0 8px 40px rgba(13, 148, 136, 0.22), 0 2px 8px rgba(0,0,0,0.12);
+  width: 100%;
+  max-width: 420px;
+  overflow: hidden;
+  animation: slideUpModal 0.2s ease;
+}
+
+@keyframes slideUpModal {
+  from { transform: translateY(16px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+/* モーダルヘッダー */
+.filter-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px 14px;
+  background: linear-gradient(135deg, var(--main-dark) 0%, var(--main) 100%);
+}
+
+.filter-modal-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.04em;
+}
+
+.filter-modal-close {
+  padding: 4px 8px;
+  font-size: 1rem;
+  font-weight: bold;
+  background: rgba(255,255,255,0.2);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  line-height: 1;
+  transition: background 0.15s;
+}
+
+.filter-modal-close:hover {
+  background: rgba(255,255,255,0.35);
+  opacity: 1;
+}
+
+/* 条件リスト */
+.filter-modal-list {
+  list-style: none;
+  padding: 16px 20px 8px;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.filter-modal-list li {
+  padding: 8px 12px;
+  background: var(--main-light);
+  border-left: 3px solid var(--main-mid);
+  border-radius: 0 6px 6px 0;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--main-dark);
+  line-height: 1.5;
+  word-break: break-all;
+}
+
+/* 対象駅数フッター */
+.filter-modal-count {
+  padding: 10px 20px 16px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-align: right;
+}
+
+/* =========================
    クイズ出題エリア
    ========================= */
 .quiz-progress {

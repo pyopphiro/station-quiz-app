@@ -61,8 +61,45 @@ document.getElementById("startQuizButton").addEventListener("click", () => {
     document.getElementById("setupSection").style.display = "none";
     document.getElementById("quizSection").style.display = "block";
 
+    // フィルタ確認ボタンを使えるようにする
+    setupFilterModal(filterUI);
+
     showQuestion();
 });
+
+/* ================================================
+   フィルタ確認モーダル
+   ================================================ */
+function setupFilterModal(ui) {
+    const btn = document.getElementById("filterInfoBtn");
+    const modal = document.getElementById("filterModal");
+    const closeBtn = document.getElementById("filterModalClose");
+    const list = document.getElementById("filterModalList");
+    const countEl = document.getElementById("filterModalCount");
+
+    btn.addEventListener("click", () => {
+        // 条件一覧を構築
+        const lines = ui.getSummaryLines();
+        list.innerHTML = lines.map(l => `<li>${l}</li>`).join("");
+        const filtered = ui.getFilteredStations();
+        countEl.textContent = `対象駅数：${filtered.length} 駅`;
+        modal.style.display = "flex";
+    });
+
+    closeBtn.addEventListener("click", () => {
+        modal.style.display = "none";
+    });
+
+    modal.addEventListener("click", (e) => {
+        if (e.target === modal) modal.style.display = "none";
+    });
+
+    document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && modal.style.display !== "none") {
+            modal.style.display = "none";
+        }
+    });
+}
 
 function shuffle(arr) {
     for (let i = arr.length - 1; i > 0; i--) {

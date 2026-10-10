@@ -485,6 +485,42 @@ const StationApp = (() => {
       return filterStations(this.allStations, this.getConditions(), this.combineMode);
     }
 
+    /**
+     * 適用中フィルタ条件の概要を文字列配列で返す
+     * 有効な条件が無い場合は ["（条件なし）"] を返す
+     */
+    getSummaryLines() {
+      const TYPE_LABELS = {
+        prefecture: "都道府県",
+        company:    "鉄道会社",
+        line:       "路線",
+        charCount:  "文字数",
+        startsWith: "〜から始まる",
+        endsWith:   "〜で終わる",
+        contains:   "〜を含む",
+      };
+      const valid = this.conditionRows.filter(r => isConditionValid(r));
+      if (valid.length === 0) return ["（条件なし・全駅対象）"];
+
+      const lines = valid.map(r => {
+        const label = TYPE_LABELS[r.type] || r.type;
+        if (r.type === "prefecture" && r.values) {
+          const names = r.values.map(cd => getPrefName(cd));
+          return `${label}：${names.join("、")}`;
+        }
+        if ((r.type === "company" || r.type === "line") && r.values) {
+          return `${label}：${r.values.join("、")}`;
+        }
+        if (r.type === "charCount") {
+          return `${label}：${r.value} 文字`;
+        }
+        return `${label}：${r.value}`;
+      });
+
+      const modeStr = this.combineMode === "AND" ? "AND（すべて満たす）" : "OR（いずれか満たす）";
+      return [`結合条件：${modeStr}`, ...lines];
+    }
+
     updatePreview() {
       const filtered = this.getFilteredStations();
       this.previewEl.innerHTML = `該当駅数: <strong>${filtered.length}</strong> 件`;
