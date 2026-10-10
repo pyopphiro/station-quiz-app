@@ -320,14 +320,34 @@ document.getElementById("nextButton").addEventListener("click", () => {
     showQuestion();
 });
 
-function showQuizResult() {
+document.getElementById("quitQuizBtn").addEventListener("click", () => {
+    const answered = reviewLog.length;
+    if (answered === 0) {
+        if (confirm("まだ一問も回答していません。終了してセットアップ画面に戻りますか？")) {
+            location.reload();
+        }
+        return;
+    }
+    if (confirm(`現時点で${answered}問回答済みです。途中終了して結果を表示しますか？`)) {
+        showQuizResult(true);
+    }
+});
+
+function showQuizResult(isEarlyExit = false) {
     document.getElementById("quizSection").style.display = "none";
     document.getElementById("quizResult").style.display = "block";
 
     const total = reviewLog.length;
     const rate = total > 0 ? Math.round((correctCount / total) * 100) : 0;
 
-    document.getElementById("quizResultTitle").textContent = rate === 100 ? "🎉 パーフェクト！" : "📊 結果発表";
+    if (isEarlyExit) {
+        document.getElementById("quizResultTitle").textContent = "🛑 途中終了";
+        document.getElementById("quizResultSubtitle").textContent =
+            `（${currentIndex + 1} 問目を回答中に途中終了しました）`;
+    } else {
+        document.getElementById("quizResultTitle").textContent = rate === 100 ? "🎉 パーフェクト！" : "📊 結果発表";
+        document.getElementById("quizResultSubtitle").textContent = "";
+    }
     document.getElementById("quizResultSummary").textContent = `${correctCount} / ${total} 問正解（正答率: ${rate}%）`;
 
     const reviewList = document.getElementById("quizReviewList");

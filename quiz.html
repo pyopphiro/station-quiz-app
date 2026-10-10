@@ -54,7 +54,10 @@
         <span id="quizProgress"></span>
         <span id="quizScore"></span>
       </div>
-      <button id="filterInfoBtn" class="filter-info-btn" title="フィルタ条件を確認">🔍 フィルタ</button>
+      <div class="quiz-top-bar-actions">
+        <button id="filterInfoBtn" class="filter-info-btn" title="フィルタ条件を確認">🔍 フィルタ</button>
+        <button id="quitQuizBtn" class="quit-quiz-btn" title="クイズを途中終了">⏹ 終了</button>
+      </div>
     </div>
 
     <div class="quiz-question">
@@ -78,6 +81,7 @@
 
     <div class="result">
       <h2 id="quizResultTitle"></h2>
+      <p id="quizResultSubtitle" class="result-subtitle"></p>
       <p id="quizResultSummary"></p>
       <a href="index.html" class="result-link">トップへ戻る</a>
       <button class="retryButton" onclick="location.reload()">再挑戦</button>
