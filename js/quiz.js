@@ -4,6 +4,8 @@
  */
 
 let filterUI = null;
+let allStations = [];
+let stationsByName = new Map();
 let quizStations = [];
 let currentIndex = 0;
 let maxQuestions = 10;
@@ -15,6 +17,17 @@ let isAnswered = false;
 let allFilteredStations = [];
 
 StationApp.loadData().then(stations => {
+    allStations = stations;
+    stationsByName = new Map();
+    for (const s of stations) {
+        const name = StationApp.getStationName(s);
+        let list = stationsByName.get(name);
+        if (!list) {
+            list = [];
+            stationsByName.set(name, list);
+        }
+        list.push(s);
+    }
     filterUI = new StationApp.FilterUI(
         document.getElementById("filterContainer"),
         stations
@@ -141,23 +154,78 @@ function getPromptText() {
 function generateChoices(correctStation) {
     const correctDisplay = getAnswerDisplay(correctStation);
     const normalizedCorrect = normalizeAnswer(correctDisplay);
+    const targetName = StationApp.getStationName(correctStation);
 
     const choices = [correctDisplay];
     const usedNormalized = new Set([normalizedCorrect]);
 
-    const others = allFilteredStations.filter(s => s.name !== correctStation.name);
-    shuffle(others);
+    // 全国の同名駅（出題駅自身を含む）を取得
+    const sameNameStations = stationsByName.get(targetName) || [correctStation];
 
-    for (const other of others) {
-        if (choices.length >= 4) break;
+    // 同名駅が持つ正答要素（都道府県/路線/鉄道会社）を禁止セットに収集
+    const forbiddenPrefs = new Set();
+    const forbiddenCompanies = new Set();
+    const forbiddenLines = new Set();
 
-        const otherDisplay = getAnswerDisplay(other);
-        const otherNormalized = normalizeAnswer(otherDisplay);
-
-        if (otherNormalized && !usedNormalized.has(otherNormalized)) {
-            choices.push(otherDisplay);
-            usedNormalized.add(otherNormalized);
+    sameNameStations.forEach(s => {
+        forbiddenPrefs.add(StationApp.getPrefName(s.pref_cd));
+        if (s.companies) {
+            s.companies.forEach(c => forbiddenCompanies.add(c));
         }
+        if (s.lines) {
+            s.lines.forEach(l => forbiddenLines.add(l));
+        }
+    });
+
+    // 候補駅が不適切（同名駅の正解要素を含む）かどうかを判定
+    function isForbiddenStation(other) {
+        // 同名駅そのものは除外
+        if (StationApp.getStationName(other) === targetName) {
+            return true;
+        }
+
+        switch (quizType) {
+            case "pref_select":
+                // 同名駅が存在するいずれかの都道府県と一致する場合は除外
+                return forbiddenPrefs.has(StationApp.getPrefName(other.pref_cd));
+
+            case "company":
+                // 同名駅が所属する鉄道会社のいずれかを1つでも含む場合は除外
+                return other.companies && other.companies.some(c => forbiddenCompanies.has(c));
+
+            case "line":
+                // 同名駅を通る路線のいずれかを1つでも含む場合は除外
+                return other.lines && other.lines.some(l => forbiddenLines.has(l));
+
+            default:
+                return false;
+        }
+    }
+
+    // 候補配列から重複しない選択肢を収集
+    function collectChoices(candidates) {
+        for (const other of candidates) {
+            if (choices.length >= 4) break;
+            if (isForbiddenStation(other)) continue;
+
+            const otherDisplay = getAnswerDisplay(other);
+            const otherNormalized = normalizeAnswer(otherDisplay);
+
+            if (otherNormalized && !usedNormalized.has(otherNormalized)) {
+                choices.push(otherDisplay);
+                usedNormalized.add(otherNormalized);
+            }
+        }
+    }
+
+    // まずは現在のフィルタ結果からシャッフルして候補を探索
+    const filteredCandidates = shuffle([...allFilteredStations]);
+    collectChoices(filteredCandidates);
+
+    // フィルタ内の駅だけでは4択が埋まらなかった場合、全国の全駅から探索
+    if (choices.length < 4) {
+        const allCandidates = shuffle([...allStations]);
+        collectChoices(allCandidates);
     }
 
     return shuffle(choices);
