@@ -74,6 +74,31 @@ const StationApp = (() => {
   }
 
   /* ================================================
+     その他条件 定義・評価
+     ================================================ */
+  const OTHER_CONDITIONS = [
+    { value: "hiragana",      label: "ひらがなを含む" },
+    { value: "katakana",      label: "カタカナを含む" },
+    { value: "kanjiNumber",   label: "漢数字を含む" },
+    { value: "duplicateChar", label: "同じ文字が二回以上含まれる" },
+  ];
+
+  function evaluateOtherCondition(name, subType) {
+    switch (subType) {
+      case "hiragana":
+        return /[ぁ-ん]/.test(name);
+      case "katakana":
+        return /[ァ-ヶー]/.test(name);
+      case "kanjiNumber":
+        return /[一二三四五六七八九十廿百千万億兆京]/.test(name);
+      case "duplicateChar":
+        return /(.).*\1/.test(name);
+      default:
+        return true;
+    }
+  }
+
+  /* ================================================
      フィルタ評価
      ================================================ */
   function evaluateCondition(station, cond) {
@@ -93,6 +118,8 @@ const StationApp = (() => {
         return cond.value && name.endsWith(cond.value);
       case "contains":
         return cond.value && name.includes(cond.value);
+      case "other":
+        return evaluateOtherCondition(name, cond.value);
       default:
         return true;
     }
@@ -290,6 +317,7 @@ const StationApp = (() => {
     { value: "startsWith", label: "〜から始まる" },
     { value: "endsWith",   label: "〜で終わる" },
     { value: "contains",   label: "〜を含む" },
+    { value: "other",      label: "その他" },
   ];
 
   class FilterUI {
@@ -470,6 +498,25 @@ const StationApp = (() => {
           this.updatePreview();
         });
         container.appendChild(input);
+      } else if (type === "other") {
+        const select = document.createElement("select");
+        select.className = "condition-other-select";
+        const defaultOpt = document.createElement("option");
+        defaultOpt.value = "";
+        defaultOpt.textContent = "-- その他条件を選択 --";
+        select.appendChild(defaultOpt);
+        OTHER_CONDITIONS.forEach(oc => {
+          const opt = document.createElement("option");
+          opt.value = oc.value;
+          opt.textContent = oc.label;
+          if (row.value === oc.value) opt.selected = true;
+          select.appendChild(opt);
+        });
+        select.addEventListener("change", () => {
+          row.value = select.value;
+          this.updatePreview();
+        });
+        container.appendChild(select);
       }
     }
 
@@ -498,6 +545,7 @@ const StationApp = (() => {
         startsWith: "〜から始まる",
         endsWith:   "〜で終わる",
         contains:   "〜を含む",
+        other:      "その他",
       };
       const valid = this.conditionRows.filter(r => isConditionValid(r));
       if (valid.length === 0) return ["（条件なし・全駅対象）"];
@@ -513,6 +561,10 @@ const StationApp = (() => {
         }
         if (r.type === "charCount") {
           return `${label}：${r.value} 文字`;
+        }
+        if (r.type === "other") {
+          const target = OTHER_CONDITIONS.find(o => o.value === r.value);
+          return `${label}：${target ? target.label : r.value}`;
         }
         return `${label}：${r.value}`;
       });
@@ -533,12 +585,14 @@ const StationApp = (() => {
      ================================================ */
   return {
     PREF_NAMES,
+    OTHER_CONDITIONS,
     loadData,
     getStationName,
     getPrefName,
     stripPrefSuffix,
     matchPrefecture,
     filterStations,
+    evaluateOtherCondition,
     getUniqueCompanies,
     getUniqueLines,
     getUniquePrefCodes,

@@ -563,8 +563,27 @@ button.secondary {
 }
 
 .condition-value-area input[type="text"],
-.condition-value-area input[type="number"] {
+.condition-value-area input[type="number"],
+.condition-other-select {
   width: 100%;
+}
+
+.condition-other-select {
+  padding: 10px 12px;
+  font-size: 0.9rem;
+  border: 2px solid var(--border);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--text);
+  cursor: pointer;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.condition-other-select:focus {
+  border-color: var(--main-mid);
+  box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.15);
 }
 
 .condition-remove-btn {
