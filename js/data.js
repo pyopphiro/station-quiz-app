@@ -21,6 +21,41 @@ const StationApp = (() => {
   };
 
   /* ================================================
+     地方区分 → 都道府県コードマッピング
+     ================================================ */
+  const REGION_PREFECTURES = {
+    "東北": [2, 3, 4, 5, 6, 7],
+    "関東": [8, 9, 10, 11, 12, 13, 14],
+    "中部": [15, 16, 17, 18, 19, 20, 21, 22, 23],
+    "北陸": [15, 16, 17, 18],
+    "甲信越": [15, 19, 20],
+    "東海": [21, 22, 23, 24],
+    "近畿": [24, 25, 26, 27, 28, 29, 30],
+    "中国": [31, 32, 33, 34, 35],
+    "四国": [36, 37, 38, 39],
+    "九州": [40, 41, 42, 43, 44, 45, 46, 47]
+  };
+
+  const REGION_OPTIONS = [
+    { value: "東北",   label: "東北" },
+    { value: "関東",   label: "関東" },
+    { value: "中部",   label: "中部" },
+    { value: "北陸",   label: "北陸" },
+    { value: "甲信越", label: "甲信越" },
+    { value: "東海",   label: "東海" },
+    { value: "近畿",   label: "近畿" },
+    { value: "中国",   label: "中国" },
+    { value: "四国",   label: "四国" },
+    { value: "九州",   label: "九州" },
+  ];
+
+  const OPERATOR_OPTIONS = [
+    { value: "gte", label: "以上" },
+    { value: "lte", label: "以下" },
+    { value: "eq",  label: "等しい" },
+  ];
+
+  /* ================================================
      ユーティリティ
      ================================================ */
   function getStationName(station) {
@@ -99,6 +134,23 @@ const StationApp = (() => {
   }
 
   /* ================================================
+     数値比較 評価
+     ================================================ */
+  function evaluateNumberComparison(actualValue, targetValue, operator) {
+    const target = parseInt(targetValue, 10);
+    if (isNaN(target)) return true;
+    switch (operator) {
+      case "gte":
+        return actualValue >= target;
+      case "lte":
+        return actualValue <= target;
+      case "eq":
+      default:
+        return actualValue === target;
+    }
+  }
+
+  /* ================================================
      フィルタ評価
      ================================================ */
   function evaluateCondition(station, cond) {
@@ -106,12 +158,21 @@ const StationApp = (() => {
     switch (cond.type) {
       case "prefecture":
         return cond.values && cond.values.includes(station.pref_cd);
+      case "region":
+        return cond.values && cond.values.some(reg => {
+          const prefs = REGION_PREFECTURES[reg];
+          return prefs && prefs.includes(station.pref_cd);
+        });
       case "company":
         return cond.values && station.companies.some(c => cond.values.includes(c));
       case "line":
         return cond.values && station.lines.some(l => cond.values.includes(l));
+      case "lineCount":
+        return evaluateNumberComparison((station.lines || []).length, cond.value, cond.operator || "gte");
+      case "companyCount":
+        return evaluateNumberComparison((station.companies || []).length, cond.value, cond.operator || "gte");
       case "charCount":
-        return name.length === parseInt(cond.value, 10);
+        return evaluateNumberComparison(name.length, cond.value, cond.operator || "eq");
       case "startsWith":
         return cond.value && name.startsWith(cond.value);
       case "endsWith":
@@ -128,7 +189,7 @@ const StationApp = (() => {
   /** 条件が有効（値が入っている）か判定 */
   function isConditionValid(cond) {
     if (!cond.type) return false;
-    if (cond.type === "prefecture" || cond.type === "company" || cond.type === "line") {
+    if (cond.type === "prefecture" || cond.type === "region" || cond.type === "company" || cond.type === "line") {
       return cond.values && cond.values.length > 0;
     }
     return cond.value !== undefined && cond.value !== null && String(cond.value).trim() !== "";
@@ -310,14 +371,17 @@ const StationApp = (() => {
      フィルタ UI クラス
      ================================================ */
   const CONDITION_TYPES = [
-    { value: "prefecture", label: "都道府県" },
-    { value: "company",    label: "鉄道会社" },
-    { value: "line",       label: "路線" },
-    { value: "charCount",  label: "文字数" },
-    { value: "startsWith", label: "〜から始まる" },
-    { value: "endsWith",   label: "〜で終わる" },
-    { value: "contains",   label: "〜を含む" },
-    { value: "other",      label: "その他" },
+    { value: "prefecture",   label: "都道府県" },
+    { value: "region",       label: "地方" },
+    { value: "company",      label: "鉄道会社" },
+    { value: "line",         label: "路線" },
+    { value: "lineCount",    label: "路線数" },
+    { value: "companyCount", label: "鉄道会社数" },
+    { value: "charCount",    label: "文字数" },
+    { value: "startsWith",   label: "〜から始まる" },
+    { value: "endsWith",     label: "〜で終わる" },
+    { value: "contains",     label: "〜を含む" },
+    { value: "other",        label: "その他" },
   ];
 
   class FilterUI {
@@ -332,6 +396,7 @@ const StationApp = (() => {
       this._prefOptions = getUniquePrefCodes(allStations).map(cd => ({
         value: cd, label: getPrefName(cd)
       }));
+      this._regionOptions = REGION_OPTIONS;
       this._companyOptions = getUniqueCompanies(allStations).map(c => ({
         value: c, label: c
       }));
@@ -398,7 +463,7 @@ const StationApp = (() => {
 
     addCondition() {
       const index = this.conditionRows.length;
-      const row = { type: "", value: null, values: null, multiSelect: null };
+      const row = { type: "", value: null, values: null, operator: "eq", multiSelect: null };
       this.conditionRows.push(row);
 
       const rowEl = document.createElement("div");
@@ -426,6 +491,7 @@ const StationApp = (() => {
         row.type = typeSelect.value;
         row.value = null;
         row.values = null;
+        row.operator = (row.type === "charCount") ? "eq" : "gte";
         if (row.multiSelect) {
           row.multiSelect.destroy();
           row.multiSelect = null;
@@ -459,12 +525,15 @@ const StationApp = (() => {
       container.innerHTML = "";
       const type = row.type;
 
-      if (type === "prefecture" || type === "company" || type === "line") {
+      if (type === "prefecture" || type === "region" || type === "company" || type === "line") {
         let options;
         let placeholder;
         if (type === "prefecture") {
           options = this._prefOptions;
           placeholder = "都道府県を選択";
+        } else if (type === "region") {
+          options = this._regionOptions;
+          placeholder = "地方を選択";
         } else if (type === "company") {
           options = this._companyOptions;
           placeholder = "鉄道会社を選択";
@@ -478,16 +547,49 @@ const StationApp = (() => {
           this.updatePreview();
         });
         row.multiSelect = ms;
-      } else if (type === "charCount") {
+      } else if (type === "charCount" || type === "lineCount" || type === "companyCount") {
+        const wrap = document.createElement("div");
+        wrap.className = "number-condition-wrap";
+
         const input = document.createElement("input");
         input.type = "number";
         input.min = "1";
-        input.placeholder = "文字数を入力";
+        const placeholders = {
+          charCount: "文字数を入力",
+          lineCount: "路線数を入力",
+          companyCount: "会社数を入力"
+        };
+        input.placeholder = placeholders[type] || "数値を入力";
+        if (row.value !== null && row.value !== undefined) {
+          input.value = row.value;
+        }
+
+        const defaultOp = (type === "charCount") ? "eq" : "gte";
+        row.operator = row.operator || defaultOp;
+
+        const opSelect = document.createElement("select");
+        opSelect.className = "condition-operator-select";
+        OPERATOR_OPTIONS.forEach(op => {
+          const opt = document.createElement("option");
+          opt.value = op.value;
+          opt.textContent = op.label;
+          if (op.value === row.operator) opt.selected = true;
+          opSelect.appendChild(opt);
+        });
+
         input.addEventListener("input", () => {
           row.value = input.value;
           this.updatePreview();
         });
-        container.appendChild(input);
+
+        opSelect.addEventListener("change", () => {
+          row.operator = opSelect.value;
+          this.updatePreview();
+        });
+
+        wrap.appendChild(input);
+        wrap.appendChild(opSelect);
+        container.appendChild(wrap);
       } else if (type === "startsWith" || type === "endsWith" || type === "contains") {
         const input = document.createElement("input");
         input.type = "text";
@@ -524,7 +626,8 @@ const StationApp = (() => {
       return this.conditionRows.map(r => ({
         type: r.type,
         value: r.value,
-        values: r.values
+        values: r.values,
+        operator: r.operator
       }));
     }
 
@@ -538,14 +641,22 @@ const StationApp = (() => {
      */
     getSummaryLines() {
       const TYPE_LABELS = {
-        prefecture: "都道府県",
-        company:    "鉄道会社",
-        line:       "路線",
-        charCount:  "文字数",
-        startsWith: "〜から始まる",
-        endsWith:   "〜で終わる",
-        contains:   "〜を含む",
-        other:      "その他",
+        prefecture:   "都道府県",
+        region:       "地方",
+        company:      "鉄道会社",
+        line:         "路線",
+        lineCount:    "路線数",
+        companyCount: "鉄道会社数",
+        charCount:    "文字数",
+        startsWith:   "〜から始まる",
+        endsWith:     "〜で終わる",
+        contains:     "〜を含む",
+        other:        "その他",
+      };
+      const OP_LABELS = {
+        gte: "以上",
+        lte: "以下",
+        eq:  "等しい"
       };
       const valid = this.conditionRows.filter(r => isConditionValid(r));
       if (valid.length === 0) return ["（条件なし・全駅対象）"];
@@ -556,11 +667,16 @@ const StationApp = (() => {
           const names = r.values.map(cd => getPrefName(cd));
           return `${label}：${names.join("、")}`;
         }
+        if (r.type === "region" && r.values) {
+          return `${label}：${r.values.join("、")}`;
+        }
         if ((r.type === "company" || r.type === "line") && r.values) {
           return `${label}：${r.values.join("、")}`;
         }
-        if (r.type === "charCount") {
-          return `${label}：${r.value} 文字`;
+        if (r.type === "charCount" || r.type === "lineCount" || r.type === "companyCount") {
+          const opText = OP_LABELS[r.operator] || "等しい";
+          const unit = r.type === "charCount" ? "文字" : (r.type === "lineCount" ? "路線" : "社");
+          return `${label}：${r.value} ${unit}（${opText}）`;
         }
         if (r.type === "other") {
           const target = OTHER_CONDITIONS.find(o => o.value === r.value);
@@ -585,6 +701,9 @@ const StationApp = (() => {
      ================================================ */
   return {
     PREF_NAMES,
+    REGION_PREFECTURES,
+    REGION_OPTIONS,
+    OPERATOR_OPTIONS,
     OTHER_CONDITIONS,
     loadData,
     getStationName,
